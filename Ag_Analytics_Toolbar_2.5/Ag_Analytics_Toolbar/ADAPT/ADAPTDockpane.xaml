@@ -1,0 +1,932 @@
+﻿<UserControl x:Class="Ag_Analytics_Toolbar.ADAPT.ADAPTDockpaneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"   
+             xmlns:ui="clr-namespace:Ag_Analytics_Toolbar.ADAPT"
+             xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="350"
+             d:DataContext="{Binding Path=ui.ADAPTDockpaneViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="ValidationInputErrorStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="Validation.ErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <StackPanel>
+                                <AdornedElementPlaceholder x:Name="placeholder" />
+                                <TextBlock FontSize="11" FontStyle="Italic" Background="DarkRed" Style="{DynamicResource Esri_TextBlockRegular}"
+                                       Text="{Binding ElementName=placeholder, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" />
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="BorderBrush" Value="DarkRed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ImageButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" LastChildFill="true" KeyboardNavigation.TabNavigation="Local" Height="30">
+            <TextBlock Grid.Column="1" Text="{Binding Heading}" Style="{DynamicResource Esri_TextBlockDockPaneHeader}">
+                <TextBlock.ToolTip>
+                    <WrapPanel Orientation="Vertical" MaxWidth="300">
+                        <TextBlock Text="{Binding Heading}" TextWrapping="Wrap"/>
+                    </WrapPanel>
+                </TextBlock.ToolTip>
+            </TextBlock>
+        </DockPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel  Margin="0,10,10,10" Orientation="Vertical">
+                <Grid Margin="0,0,0,5" x:Name="Grid_ADAPT_File">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Top" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_ADAPT_File, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">ADAPT_File</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">file</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Yes</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            A zipped adapt file for conversion
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{DynamicResource Esri_TextBlockRegular}">File (zipped) for conversion</TextBlock>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" Text="{Binding ADAPTFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Style="{StaticResource ImageButtonStyle}" Command="{Binding ADAPTFilePathCommand}" ToolTip="Browse">
+                                <Image Source="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/FolderOpenState32.png" />
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                
+                <Grid Margin="0,5" x:Name="Grid_Source_Type">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="6*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Source_Type, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Source_Type</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">String</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Yes</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Default</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Climate</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Options</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            Climate, CNH
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            The type of adapt data
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">Source Type</TextBlock>
+                    <ComboBox Grid.Column="2" ItemsSource="{Binding SourceTypes}" SelectedItem="{Binding SelectedSourceType}" />
+                </Grid>
+                <Grid Margin="0,5" x:Name="Grid_Shape_Type">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Shape_Type, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Shape_Type</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">String</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Options</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            Polygon, Point
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            Formatting of the resulting operation shapefile. Can either be as points or polygons
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">Shape Type</TextBlock>
+                    <ComboBox Grid.Column="2" ItemsSource="{Binding ShapeTypes}" SelectedItem="{Binding SelectedShapeType}" />
+                </Grid>
+                <Grid Margin="0,10" x:Name="Grid_Frequency">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Source" Value="../Images/tooltip_32.png" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Frequency, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=TextBox_Frequency, Path=(Validation.HasError)}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Setter Property="Source" Value="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Close16.png" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Frequency</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Integer</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Default</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">0</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            A frequency of time to aggregate data (Default 0s native)
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">Frequency (seconds)</TextBlock>
+                    <TextBox Grid.Column="2" x:Name="TextBox_Frequency" TextAlignment="Right" Style="{StaticResource ValidationInputErrorStyle}"
+                             Text="{Binding Frequency, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}" />
+
+                </Grid>
+                <Grid Margin="0,10" x:Name="Grid_Day_Window">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Source" Value="../Images/tooltip_32.png" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Day_Window, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=TextBox_Day_Window, Path=(Validation.HasError)}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Setter Property="Source" Value="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Close16.png" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Day_Window</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Integer</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Default</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">3</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            The time period (in days) for which to group consecutive operations
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">
+                        Time Box Period (days)
+                    </TextBlock>
+                    <TextBox Grid.Column="2" x:Name="TextBox_Day_Window" TextAlignment="Right" Style="{StaticResource ValidationInputErrorStyle}"
+                             Text="{Binding DayWindow, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+                <Grid Margin="0,10" x:Name="Grid_Operation_Type">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Operation_Type, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Operation_Type</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">String</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Yes</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Options</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                             Planting, Harvesting, Spraying
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            Operation type of the ADAPT file
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">Operation Type</TextBlock>
+                    <ComboBox Grid.Column="2" ItemsSource="{Binding OperationTypes}" SelectedItem="{Binding SelectedOperationType}" />
+                </Grid>
+                
+                <Grid Margin="0,10" x:Name="Grid_Recalculate_Area">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Recalculate_Area, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Recalculate_Area</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Boolean</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Options</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                             True, False
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            If recalculate the shape area.
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <CheckBox Grid.Column="1" Margin="0,10" IsChecked="{Binding CheckRecalculateArea}">
+                        <TextBlock Style="{DynamicResource Esri_TextBlockRegular}">Recalculate Area</TextBlock>
+                    </CheckBox>
+                </Grid>
+
+                <Grid Margin="0,0,0,5" x:Name="Grid_Download_Folder">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Top" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Download_Folder, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Download Folder</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">text</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Default</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                                Geodatabase path of current project
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                                 Enter the folder or geodatabase for saving the result data.
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{DynamicResource Esri_TextBlockRegular}">Download Folder</TextBlock>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="0,0,10,0" VerticalAlignment="Center" Text="{Binding DownloadPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Style="{StaticResource ImageButtonStyle}" Command="{Binding DownloadPathCommand}" ToolTip="Browse">
+                                <Image Source="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/FolderOpenState32.png" />
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0,10" x:Name="Grid_RasterizeShapefile">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" 
+                           Source="../Images/tooltip_32.png" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_RasterizeShapefile, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Rasterize Shapefile</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Boolean</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">No</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Default</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">True</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                              if true, shapefile is rasterized. 
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <CheckBox Grid.Column="1" Margin="0,5" IsChecked="{Binding CheckRasterizeShapefile}">
+                        <TextBlock Style="{DynamicResource Esri_TextBlockRegular}">Rasterize the Result Shapefile</TextBlock>
+                    </CheckBox>
+                </Grid>
+                
+                <Grid Margin="0,10" x:Name="Grid_Resolution">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="6*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" ToolTipService.ShowDuration="60000">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Source" Value="../Images/tooltip_32.png" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=Grid_Resolution, Path=IsMouseOver}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=TextBox_Resolution, Path=(Validation.HasError)}" Value="True">
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Setter Property="Source" Value="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Close16.png" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Placement="Left" MaxWidth="300" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                                <StackPanel>
+                                    <TextBlock FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Resolution</TextBlock>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Data Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Float</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Required</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}">Yes</TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Options</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                            0.01~0.00001 Ex:” 0.0001, 0.0001,0.0001,0.0001,0.0001,0.0001,0.0001”
+                                        </TextBlock>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Description</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap">
+                                             Resolution for result raster, in degree. Same number of number as fieldnames, separated by ’,’
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <TextBlock Grid.Column="1" Margin="0,0,10,0" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}">Raster Resolution</TextBlock>
+                    <TextBox Grid.Column="2" x:Name="TextBox_Resolution" TextAlignment="Right" Style="{StaticResource ValidationInputErrorStyle}"
+                             Text="{Binding CellSize, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+        <TextBlock Grid.Row="2" Margin="10,5" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding ValidationSubmitError}" Foreground="Red"/>
+        <StackPanel Grid.Row="3" Margin="10,5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Command="{Binding SubmitCommand}" IsEnabled="{Binding SubmitButtonEnabled}" Style="{DynamicResource Esri_Button}">Submit</Button>
+            <Button Command="{Binding CancelCommand}" Style="{DynamicResource Esri_Button}">Cancel</Button>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="4" Orientation="Vertical" Margin="10,5,10,10">
+            <TextBlock  Margin="0,0,0,5" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding ProgressMessage}"/>
+            <ProgressBar Height="6" IsIndeterminate="True" 
+                     Visibility="{Binding ProgressVisible}" Background="DimGray" BorderThickness="0" Foreground="DodgerBlue"/>
+        </StackPanel>
+        
+        <Grid Grid.Row="5" x:Name="GridResult" Margin="2,0" Height="30" Visibility="{Binding ResultBoxVisible}" Background="{Binding ResultBoxBGColor}" 
+              ToolTipService.IsEnabled="True" ToolTipService.ShowDuration="60000">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Margin="0,0,10,0" Width="16" Height="16" VerticalAlignment="Center" Source="{Binding ResultBoxImage}" />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding ResultBoxMessage}" />
+            <Grid.ToolTip>
+                <ToolTip Placement="Left" MaxWidth="400" Background="{DynamicResource Esri_ControlBackgroundBrush}">
+                    <Grid Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="HLS Service Result Details" FontSize="16" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}" />
+                        <Grid Grid.Row="1" Margin="0,5" Height="30" Background="{Binding ResultBoxBGColor}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Margin="0,0,10,0" Width="16" Height="16" VerticalAlignment="Center" Source="{Binding ResultBoxImage}" />
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding ResultBoxMessage}"/>
+                        </Grid>
+                        <Grid Grid.Row="2" Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Started</TextBlock>
+                            <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding SubmitStartedTime}" />
+                        </Grid>
+                        <Grid Grid.Row="3" Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Completed</TextBlock>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding CompletedTime}"/>
+                        </Grid>
+                        <Grid Grid.Row="4" Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Elapsed Time</TextBlock>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}" Text="{Binding ElapsedTime}"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="5" VerticalScrollBarVisibility="Auto" MaxHeight="700">
+                            <StackPanel  Margin="0,5,5,5" Orientation="Vertical">
+                                <TextBlock Margin="0,5" FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Errors and Warnings</TextBlock>
+                                <TextBlock Margin="10,5" VerticalAlignment="Center" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding ResultErrorMessage}"/>
+                                <TextBlock Margin="0,5" FontSize="14" Style="{DynamicResource Esri_TextBlockBackStageSubHeader}">Prameters</TextBlock>
+                                <StackPanel Margin="10,5">
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">ADAPT_File</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitAdaptFile}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Source_Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitSourceType}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Shape_Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitShapeType}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Day_Window</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitDayWindow}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Frequency</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitFrequency}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Operation_Type</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitOperationType}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Recalculate_Area</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitRecalculateArea}"/>
+                                    </Grid>
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Token</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitToken}"/>
+                                    </Grid>
+                                    <Border BorderBrush="{DynamicResource Esri_TextControlBrush}" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <Grid Margin="0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Style="{DynamicResource Esri_TextBlockRegular}">Download Folder</TextBlock>
+                                        <TextBlock Grid.Column="1" Style="{DynamicResource Esri_TextBlockRegular}" TextWrapping="Wrap" Text="{Binding SubmitDownloadFolder}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </ToolTip>
+            </Grid.ToolTip>
+        </Grid>
+    </Grid>
+</UserControl>
